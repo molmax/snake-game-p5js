@@ -3,6 +3,9 @@ class Snake {
     this.x = x;
     this.y = y;
     this.direction = direction;
+    this.length = 10;
+    this.speed = 5;
+    this.baseCellSize = 10;
   }
 
   move() {
@@ -20,19 +23,24 @@ class Snake {
     }
 
     if(this.direction === 'RIGHT') {
-      this.x = this.x + 5; 
+      this.x = this.x + this.speed; 
     } else if (this.direction === 'LEFT') {
-      this.x = this.x - 5; 
+      this.x = this.x - this.speed; 
     } else if (this.direction === 'UP') {
-      this.y = this.y - 5; 
+      this.y = this.y - this.speed; 
     } else if (this.direction === 'DOWN') {
-      this.y = this.y + 5; 
+      this.y = this.y + this.speed; 
     }
-    rect(this.x, this.y, 10);
+    rect(this.x, this.y, this.length, this.baseCellSize);
   }
 
   changeDirection(direction) {
     this.direction = direction;
+  }
+
+  onFoodConsumed() {
+    //TODO set length limit
+    this.length = this.length + this.baseCellSize;
   }
 }
 
