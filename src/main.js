@@ -1,46 +1,154 @@
-class Snake {
-  constructor(x, y, direction) {
+class SnakeCell {
+  constructor(x, y, isHead) {
     this.x = x;
     this.y = y;
-    this.direction = direction;
-    this.length = 10;
+    this.isHead = isHead;
+  }
+}
+
+class Snake {
+  constructor() {
+    this.headX = canvasWidth / 2;
+    this.headY = canvasHeight / 2;
+    this.cells = [];  
+    this.cells.push(new SnakeCell(this.headX, this.headY, true));
+    this.cells.push(new SnakeCell(this.headX - basicCellSize, this.headY, false));
+    this.direction = 'RIGHT';
+    this.previousDirection = this.direction;
     this.speed = 5;
-    this.baseCellSize = 10;
   }
 
   move() {
-    if (this.x > canvasWidth) {
-      this.x = 0;
-    }
-    if(this.y > canvasHeight) {
-      this.y = 0;
-    }
-    if (this.x < 0) {
-      this.x = canvasWidth;
-    } 
-    if(this.y < 0) {
-      this.y = canvasHeight;
-    }
+    this.cells.forEach(cell => {
 
-    if(this.direction === 'RIGHT') {
-      this.x = this.x + this.speed; 
-    } else if (this.direction === 'LEFT') {
-      this.x = this.x - this.speed; 
-    } else if (this.direction === 'UP') {
-      this.y = this.y - this.speed; 
-    } else if (this.direction === 'DOWN') {
-      this.y = this.y + this.speed; 
-    }
-    rect(this.x, this.y, this.length, this.baseCellSize);
+      if (cell.x > canvasWidth) {
+        cell.x = 0;
+      }
+      if(cell.y > canvasHeight) {
+        cell.y = 0;
+      }
+      if (cell.x < 0) {
+        cell.x = canvasWidth;
+      } 
+      if(cell.y < 0) {
+        cell.y = canvasHeight;
+      }
+
+      if (cell.isHead) {
+        switch (this.direction) {
+          case 'RIGHT': 
+            cell.x = cell.x + this.speed;
+            break;
+          case 'LEFT':
+            cell.x = cell.x - this.speed;
+            break;
+          case 'UP':
+            cell.y = cell.y - this.speed; 
+            break;
+          case 'DOWN':
+            cell.y = cell.y + this.speed;
+            break;
+        }
+        this.headX = cell.x;
+        this.headY = cell.y;
+      } else {
+        switch(this.direction) {
+          case 'UP': 
+          { 
+            if (this.previousDirection === 'RIGHT') {
+              if (cell.x < this.headX) {
+                cell.x = cell.x + this.speed;
+              } else {
+                cell.y = cell.y - this.speed;
+              }
+            } else if (this.previousDirection === 'LEFT') {
+              if (cell.x > this.headX) {
+                cell.x = cell.x - this.speed;
+              } else {
+                cell.y = cell.y - this.speed;
+              }
+            } else if (this.previousDirection === 'UP') {
+              cell.y = cell.y - this.speed;
+            }
+          }
+          break;
+          case 'DOWN': 
+          {
+            if (this.previousDirection === 'RIGHT') {
+              if (cell.x < this.headX) {
+                cell.x = cell.x + this.speed;
+              } else {
+                cell.y = cell.y + this.speed;
+              }
+            } else if (this.previousDirection === 'LEFT') {
+              if (cell.x > this.headX) {
+                cell.x = cell.x - this.speed;
+              } else {
+                cell.y = cell.y + this.speed;
+              }
+            } else if (this.previousDirection === 'DOWN') {
+              cell.y = cell.y + this.speed;
+            }
+          }
+          break;
+          case 'RIGHT': {
+            if (this.previousDirection === 'UP') {
+              if (cell.y > this.headY) {
+                cell.y = cell.y - this.speed;
+              } else {
+                cell.x = cell.x + this.speed;
+              }
+            } else if (this.previousDirection === 'DOWN') {
+              if (cell.y < this.headY) {
+                cell.y = cell.y + this.speed;
+              } else {
+                cell.x = cell.x + this.speed;
+              }
+            } else if (this.previousDirection === 'RIGHT') {
+              cell.x = cell.x + this.speed;
+            }
+          }
+          break;
+          case 'LEFT': {
+            if (this.previousDirection === 'UP') {
+              if (cell.y > this.headY) {
+                cell.y = cell.y - this.speed;
+              } else {
+                cell.x = cell.x - this.speed;
+              }
+            } else if (this.previousDirection === 'DOWN') {
+              if (cell.y < this.headY) {
+                cell.y = cell.y + this.speed;
+              } else {
+                cell.x = cell.x - this.speed;
+              }
+            } else if (this.previousDirection === 'LEFT') {
+              cell.x = cell.x - this.speed;
+            }
+          }
+          break;
+        }
+      }
+      rect(cell.x, cell.y, basicCellSize);
+    });
   }
 
   changeDirection(direction) {
+    let isOppositeDirection = (this.direction === 'RIGHT' && direction === 'LEFT')
+    || (this.direction === 'LEFT' && direction === 'RIGHT')
+    || (this.direction === 'UP' && direction === 'DOWN')
+    || (this.direction === 'DOWN' && direction === 'UP');
+
+    if (isOppositeDirection) {
+      return;
+    }
+
+    this.previousDirection = this.direction;
     this.direction = direction;
   }
 
   onFoodConsumed() {
-    //TODO set length limit
-    this.length = this.length + this.baseCellSize;
+    //TODO
   }
 }
 
@@ -48,7 +156,8 @@ const canvasWidth = 400;
 const canvasHeight = 400;
 const bckgColor = 120;
 const frameRateValue = 30;
-const snake = new Snake(canvasWidth / 2, canvasHeight / 2, 'RIGHT');
+const basicCellSize = 10;
+const snake = new Snake();
 
 function setup() {
   createCanvas(canvasWidth, canvasHeight);
