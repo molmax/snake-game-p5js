@@ -8,17 +8,29 @@ class SnakeCell {
 
 class Snake {
   constructor() {
-    this.headX = canvasWidth / 2;
-    this.headY = canvasHeight / 2;
     this.cells = [];  
-    this.cells.push(new SnakeCell(this.headX, this.headY, true));
-    this.cells.push(new SnakeCell(this.headX - basicCellSize, this.headY, false));
+
+    //temp
+    let x  = basicCellSize;
+    this.cells.push(new SnakeCell(canvasWidth / 2, canvasHeight / 2, true));
+    for(let i = 0; i < 10; i++) {
+      this.cells.push(new SnakeCell(canvasWidth / 2 - x, canvasHeight / 2, false));
+      x = x + basicCellSize;
+    }
+    //temp
+
+    // this.cells.push(new SnakeCell(canvasWidth / 2, canvasHeight / 2, true));
+    // this.cells.push(new SnakeCell(canvasWidth / 2 - basicCellSize, canvasHeight / 2, false));
+    //TODO use enum
     this.direction = 'RIGHT';
     this.previousDirection = this.direction;
-    this.speed = 5;
+    this.speed = 3;
   }
 
   move() {
+    let previousX;
+    let previousY;
+
     this.cells.forEach(cell => {
 
       if (cell.x > canvasWidth) {
@@ -35,6 +47,8 @@ class Snake {
       }
 
       if (cell.isHead) {
+       
+
         switch (this.direction) {
           case 'RIGHT': 
             cell.x = cell.x + this.speed;
@@ -49,85 +63,43 @@ class Snake {
             cell.y = cell.y + this.speed;
             break;
         }
-        this.headX = cell.x;
-        this.headY = cell.y;
+        previousX = cell.x;
+        previousY = cell.y;
       } else {
-        switch(this.direction) {
-          case 'UP': 
-          { 
-            if (this.previousDirection === 'RIGHT') {
-              if (cell.x < this.headX) {
-                cell.x = cell.x + this.speed;
-              } else {
-                cell.y = cell.y - this.speed;
-              }
-            } else if (this.previousDirection === 'LEFT') {
-              if (cell.x > this.headX) {
-                cell.x = cell.x - this.speed;
-              } else {
-                cell.y = cell.y - this.speed;
-              }
-            } else if (this.previousDirection === 'UP') {
-              cell.y = cell.y - this.speed;
+
+        let tempX = cell.x;
+        let tempY = cell.y;
+
+        switch (this.direction) {
+          case 'RIGHT': 
+            {
+              cell.x = previousX - basicCellSize;
+              cell.y = previousY;
             }
-          }
-          break;
-          case 'DOWN': 
-          {
-            if (this.previousDirection === 'RIGHT') {
-              if (cell.x < this.headX) {
-                cell.x = cell.x + this.speed;
-              } else {
-                cell.y = cell.y + this.speed;
-              }
-            } else if (this.previousDirection === 'LEFT') {
-              if (cell.x > this.headX) {
-                cell.x = cell.x - this.speed;
-              } else {
-                cell.y = cell.y + this.speed;
-              }
-            } else if (this.previousDirection === 'DOWN') {
-              cell.y = cell.y + this.speed;
+            break;
+          case 'LEFT':
+            {
+              cell.x = previousX + basicCellSize;
+              cell.y = previousY;
+
             }
-          }
-          break;
-          case 'RIGHT': {
-            if (this.previousDirection === 'UP') {
-              if (cell.y > this.headY) {
-                cell.y = cell.y - this.speed;
-              } else {
-                cell.x = cell.x + this.speed;
-              }
-            } else if (this.previousDirection === 'DOWN') {
-              if (cell.y < this.headY) {
-                cell.y = cell.y + this.speed;
-              } else {
-                cell.x = cell.x + this.speed;
-              }
-            } else if (this.previousDirection === 'RIGHT') {
-              cell.x = cell.x + this.speed;
+            break;
+          case 'UP':
+            {
+              cell.y = previousY + basicCellSize;
+              cell.x = previousX;
             }
-          }
-          break;
-          case 'LEFT': {
-            if (this.previousDirection === 'UP') {
-              if (cell.y > this.headY) {
-                cell.y = cell.y - this.speed;
-              } else {
-                cell.x = cell.x - this.speed;
-              }
-            } else if (this.previousDirection === 'DOWN') {
-              if (cell.y < this.headY) {
-                cell.y = cell.y + this.speed;
-              } else {
-                cell.x = cell.x - this.speed;
-              }
-            } else if (this.previousDirection === 'LEFT') {
-              cell.x = cell.x - this.speed;
+            break;
+          case 'DOWN':
+            {
+              cell.y = previousY - basicCellSize;
+              cell.x = previousX;
             }
-          }
-          break;
+            break;
         }
+
+        previousX = tempX;
+        previousY = tempY;
       }
       rect(cell.x, cell.y, basicCellSize);
     });
