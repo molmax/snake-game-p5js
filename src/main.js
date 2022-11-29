@@ -9,18 +9,8 @@ class SnakeCell {
 class Snake {
   constructor() {
     this.cells = [];  
-
-    //temp
-    let x  = basicCellSize;
     this.cells.push(new SnakeCell(canvasWidth / 2, canvasHeight / 2, true));
-    for(let i = 0; i < 10; i++) {
-      this.cells.push(new SnakeCell(canvasWidth / 2 - x, canvasHeight / 2, false));
-      x = x + basicCellSize;
-    }
-    //temp
-
-    // this.cells.push(new SnakeCell(canvasWidth / 2, canvasHeight / 2, true));
-    // this.cells.push(new SnakeCell(canvasWidth / 2 - basicCellSize, canvasHeight / 2, false));
+    this.cells.push(new SnakeCell(canvasWidth / 2 , canvasHeight / 2, false));   
     //TODO use enum
     this.direction = 'RIGHT';
     this.previousDirection = this.direction;
@@ -47,8 +37,6 @@ class Snake {
       }
 
       if (cell.isHead) {
-       
-
         switch (this.direction) {
           case 'RIGHT': 
             cell.x = cell.x + this.speed;
@@ -66,7 +54,6 @@ class Snake {
         previousX = cell.x;
         previousY = cell.y;
       } else {
-
         let tempX = cell.x;
         let tempY = cell.y;
 
@@ -127,7 +114,7 @@ class Snake {
 const canvasWidth = 400;
 const canvasHeight = 400;
 const bckgColor = 120;
-const frameRateValue = 30;
+const frameRateValue = 25;
 const basicCellSize = 10;
 const snake = new Snake();
 
