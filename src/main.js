@@ -1,141 +1,69 @@
-class SnakeCell {
-  constructor(x, y, isHead) {
-    this.x = x;
-    this.y = y;
-    this.isHead = isHead;
-  }
-}
-
+cHeight = 400;
+cWidth = 400;
+  
 class Snake {
-  constructor() {
-    this.cells = [];  
-    this.cells.push(new SnakeCell(canvasWidth / 2, canvasHeight / 2, true));
-    this.cells.push(new SnakeCell(canvasWidth / 2 , canvasHeight / 2, false));   
-    //TODO use enum
-    this.direction = 'RIGHT';
-    this.previousDirection = this.direction;
-    this.speed = 3;
-  }
+    x = 200;
+    y = 200;
+    dx = grid;
+    dy = 0;
+    cells = [];
 
-  move() {
-    let previousX;
-    let previousY;
-
-    this.cells.forEach(cell => {
-
-      if (cell.x > canvasWidth) {
-        cell.x = 0;
-      }
-      if(cell.y > canvasHeight) {
-        cell.y = 0;
-      }
-      if (cell.x < 0) {
-        cell.x = canvasWidth;
-      } 
-      if(cell.y < 0) {
-        cell.y = canvasHeight;
-      }
-
-      if (cell.isHead) {
-        switch (this.direction) {
-          case 'RIGHT': 
-            cell.x = cell.x + this.speed;
-            break;
-          case 'LEFT':
-            cell.x = cell.x - this.speed;
-            break;
-          case 'UP':
-            cell.y = cell.y - this.speed; 
-            break;
-          case 'DOWN':
-            cell.y = cell.y + this.speed;
-            break;
+    constructor() {
+        for (let i = 0; i < 4; i++) {
+            let xoff = grid * i;
+            this.cells.push({ x: this.x - xoff, y: this.y });
         }
-        previousX = cell.x;
-        previousY = cell.y;
-      } else {
-        let tempX = cell.x;
-        let tempY = cell.y;
-
-        switch (this.direction) {
-          case 'RIGHT': 
-            {
-              cell.x = previousX - basicCellSize;
-              cell.y = previousY;
-            }
-            break;
-          case 'LEFT':
-            {
-              cell.x = previousX + basicCellSize;
-              cell.y = previousY;
-
-            }
-            break;
-          case 'UP':
-            {
-              cell.y = previousY + basicCellSize;
-              cell.x = previousX;
-            }
-            break;
-          case 'DOWN':
-            {
-              cell.y = previousY - basicCellSize;
-              cell.x = previousX;
-            }
-            break;
-        }
-
-        previousX = tempX;
-        previousY = tempY;
-      }
-      rect(cell.x, cell.y, basicCellSize);
-    });
-  }
-
-  changeDirection(direction) {
-    let isOppositeDirection = (this.direction === 'RIGHT' && direction === 'LEFT')
-    || (this.direction === 'LEFT' && direction === 'RIGHT')
-    || (this.direction === 'UP' && direction === 'DOWN')
-    || (this.direction === 'DOWN' && direction === 'UP');
-
-    if (isOppositeDirection) {
-      return;
+        // this.cells.unshift({ x: this.x, y: this.y })
     }
 
-    this.previousDirection = this.direction;
-    this.direction = direction;
+    update() {
+        this.cells.forEach(cell => {
+            cell.x += this.dx;
+            cell.y += this.dy;
+        });
+    }
+
+    render() {
+        this.cells.forEach(cell => {
+            fill(0, 180, 0);
+            rect(cell.x, cell.y, grid);
+        })
+    }
+}
+
+  function setup() {
+    createCanvas(cHeight, cWidth);
+    frameRate(15);
+    grid = 10;
+    snake = new Snake();
   }
-
-  onFoodConsumed() {
-    //TODO
+  
+  function draw() {
+    background(60);
+    snake.update();
+    snake.render();
   }
-}
-
-const canvasWidth = 400;
-const canvasHeight = 400;
-const bckgColor = 120;
-const frameRateValue = 25;
-const basicCellSize = 10;
-const snake = new Snake();
-
-function setup() {
-  createCanvas(canvasWidth, canvasHeight);
-  frameRate(frameRateValue);
-}
-
-function draw() {
-  background(bckgColor);
-  snake.move();
-}
-
-function keyPressed() {
-  if (keyCode === UP_ARROW) {
-    snake.changeDirection('UP');
-  } else if (keyCode === DOWN_ARROW) {
-    snake.changeDirection('DOWN');
-  } else if (keyCode === LEFT_ARROW) {
-    snake.changeDirection('LEFT');
-  } else if (keyCode === RIGHT_ARROW) {
-    snake.changeDirection('RIGHT');
+  
+  function keyPressed() {
+    if (keyCode === UP_ARROW) {
+        if (snake.dy === 0) {
+             snake.dy = -grid;
+             snake.dx = 0;
+        }
+    } else if (keyCode === DOWN_ARROW) {
+        if (snake.dy === 0) {
+            snake.dy = grid;
+            snake.dx = 0;     
+        }
+    } else if (keyCode === LEFT_ARROW) {
+        if (snake.dx === 0) {
+            snake.dx = -grid;
+            snake.dy = 0;  
+        }
+    } else if (keyCode === RIGHT_ARROW) {
+        if (snake.dx === 0) {
+            snake.dx = grid;
+            snake.dy = 0;
+        }
+    }
   }
-}
