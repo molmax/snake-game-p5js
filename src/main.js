@@ -30,11 +30,11 @@ function setup() {
   function createApple() {
     do {
         x = Math.floor(random(cWidth));
-    } while (x % gridSize != 0);
+    } while (x % gridSize != 0 || x < gridSize || x > cWidth - gridSize);
 
     do {
         y = Math.floor(random(cHeight));
-    } while (y % gridSize != 0);
+    } while (y % gridSize != 0 || y <= gridSize || y > cHeight - gridSize);
 
     apple = { x: x, y: y };
 
