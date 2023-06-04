@@ -6,11 +6,24 @@ function setup() {
     frameRate(5);
     gridSize = 20;
     snake = new Snake();
-    apple = createVector(random(cWidth), random(cHeight));
+
+    do {
+        x = Math.floor(random(cWidth));
+    } while (x % gridSize != 0);
+
+    do {
+        y = Math.floor(random(cHeight));
+    } while (y % gridSize != 0);
+
+    apple = createVector(x, y);
   }
   
   function draw() {
-    background(60);
+    background(60)
+    sHead = snake.cells[snake.length - 1];
+    // if (sHead.x) {
+        // onAppleConsumed();
+    // }
     snake.update();
     snake.render();
     this.renderApple();
@@ -19,6 +32,10 @@ function setup() {
   function renderApple() {
     fill(240, 0, 0);
     rect(apple.x, apple.y, gridSize);
+  }
+
+  function onAppleConsumed() {
+    
   }
   
   function keyPressed() {
@@ -60,14 +77,28 @@ function setup() {
     }
 
     update() {
+        let prevX = 0;
+        let prevY = 0;
         this.cells.forEach(cell => {
-            cell.x += this.dx;
-            cell.y += this.dy;
+            if (prevX == 0 && prevY == 0) {
+                prevX = cell.x;
+                prevY = cell.y;
+                cell.x += this.dx;
+                cell.y += this.dy;
+            }
+            else {
+                let tempX = cell.x;
+                cell.x = prevX;
+                prevX = tempX;
+
+                let tempY = cell.y;
+                cell.y = prevY;
+                prevY = tempY;
+            }        
         });
     }
 
     render() {
-        // scale(gridSize);
         this.cells.forEach(cell => {
             fill(0, 180, 0);
             rect(cell.x, cell.y, gridSize);
