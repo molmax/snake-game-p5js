@@ -7,15 +7,6 @@ function setup() {
     frameRate(5);
     gridSize = 20;
     snake = new Snake();
-
-    do {
-        x = Math.floor(random(cWidth));
-    } while (x % gridSize != 0);
-
-    do {
-        y = Math.floor(random(cHeight));
-    } while (y % gridSize != 0);
-
     apple = createApple();
   }
   
@@ -59,7 +50,7 @@ function setup() {
     apple = createApple();
     lastCell = snake.cells[snake.cells.length-1];
     x = lastCell.x - gridSize;
-    y = lastCell.y = gridSize;
+    y = lastCell.y - gridSize;
     snake.cells.push({x: x, y: y});
     score++;
   }
