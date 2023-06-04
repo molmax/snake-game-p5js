@@ -1,11 +1,11 @@
 cHeight = 800;
 cWidth = 800;
 score = 0;
+gridSize = 20;
 
 function setup() {
     createCanvas(cHeight, cWidth);
     frameRate(5);
-    gridSize = 20;
     snake = new Snake();
     apple = createApple();
   }
@@ -27,14 +27,18 @@ function setup() {
     drawScore();
   }
 
+  function updateSpeed() {
+    //TODO
+  }
+
   function createApple() {
     do {
         x = Math.floor(random(cWidth));
-    } while (x % gridSize != 0 || x < gridSize || x > cWidth - gridSize);
+    } while (x % gridSize != 0 || x <= gridSize || x > cWidth - gridSize * 2);
 
     do {
         y = Math.floor(random(cHeight));
-    } while (y % gridSize != 0 || y <= gridSize || y > cHeight - gridSize);
+    } while (y % gridSize != 0 || y <= gridSize || y > cHeight - gridSize * 2);
 
     apple = { x: x, y: y };
 
@@ -53,6 +57,7 @@ function setup() {
     y = lastCell.y - gridSize;
     snake.cells.push({x: x, y: y});
     score++;
+    // updateSpeed();
   }
   
   function keyPressed() {
