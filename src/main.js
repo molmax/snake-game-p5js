@@ -2,6 +2,8 @@ cHeight = 800;
 cWidth = 800;
 score = 0;
 gridSize = 20;
+initialSnakeSize = 4;
+winScore = 1000;
 
 function setup() {
     createCanvas(cHeight, cWidth);
@@ -11,20 +13,32 @@ function setup() {
   }
   
   function draw() {
-    background(60)
+    background(60);
+    drawScore();
+    if (checkWinCondition()) {
+        endGame(true);
+        return;
+    }
 
     sHead = snake.cells[0];
+
     if (sHead.x == apple.x && sHead.y == apple.y) {
         onAppleConsumed();
     }
+
     snake.update();
+
     if (snake.checkCollision()) {
-        endGame();
+        endGame(false);
         return;
     }
+
     snake.render();
     renderApple();
-    drawScore();
+  }
+
+  function checkWinCondition() {
+    return score == winScore;
   }
 
   function updateSpeed() {
@@ -92,7 +106,7 @@ function setup() {
     cells = [];
 
     constructor() {
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < initialSnakeSize; i++) {
             let xoff = gridSize * i;
             this.cells.push({ x: this.x - xoff, y: this.y });
         }
@@ -151,13 +165,17 @@ function setup() {
 function drawScore() {
     textSize(20);
     fill(10, 200, 10);  
-    text('score: ' + this.score, cWidth - 80, 20);
+    text('score: ' + this.score, cWidth - 150, 20);
 }
 
-function endGame() {
+function endGame(isWin) {
     textSize(32);
-    fill(256, 256, 256);  
-    text('Game Over!', cWidth / 2 - 100, cHeight / 2);
+    fill(256, 256, 256);
+    if (isWin) {
+        text('You Win!', cWidth / 2 - 100, cHeight / 2);
+    } else {
+        text('Game Over!', cWidth / 2 - 100, cHeight / 2);
+    }
 
     textSize(20);
     fill(200, 10, 10);  
